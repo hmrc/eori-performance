@@ -29,5 +29,25 @@ class EORISimulation extends PerformanceTestRunner {
     getStrideAuthResponseRedirect,
     postSAMLResponseToStrideLogin
   )
+  //Internal service
+  setup("Update Journey", "Update EORI Journey") withActions(
+
+    getSelectUpdateOption,
+    postSelectUpdateOption
+  )
+  setup("Cancel Journey", "Cancel EORI Journey") withActions(
+
+    getSelectCancelOption,
+    postSelectCancelOption
+  )
+  //Internal service
+//  setup("Cancel Journey", "Cancel EORI Journey") withActions(
+//    redirectWithoutStrideSession,
+//    getStrideLoginRedirect,
+//    getStrideIdpStubPage,
+//    postStrideLogin,
+//    getStrideAuthResponseRedirect,
+//    postCancelJourney
+//  )
   runSimulation()
 }
