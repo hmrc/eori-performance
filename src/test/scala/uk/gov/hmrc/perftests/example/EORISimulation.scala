@@ -30,7 +30,7 @@ class EORISimulation extends PerformanceTestRunner {
     postSAMLResponseToStrideLogin
   )
   //Update service
-  setup("Update Journey", "Update EORI Journey") withActions(
+  setup("Update Journey", "Update EORI Journey steps") withActions(
 
     getSelectUpdateOption,
     postSelectUpdateOption,
@@ -40,7 +40,7 @@ class EORISimulation extends PerformanceTestRunner {
     postConfirmUpdate
   )
   //Cancel service
-  setup("Cancel Journey", "Cancel EORI Journey") withActions(
+  setup("Cancel Journey", "Cancel EORI Journey steps") withActions(
 
     getSelectCancelOption,
     postSelectCancelOption,
