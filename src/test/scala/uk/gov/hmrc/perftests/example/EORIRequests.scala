@@ -26,12 +26,12 @@ import uk.gov.hmrc.perftests.example.utils.RequestUtils._
 object EORIRequests extends ServicesConfiguration {
 
   val baseUrl: String = baseUrlFor("eori-service")
-  val strideAuthLogin : String = baseUrlFor("stride-stub")
-  val strideAuthResponse : String = baseUrlFor("stride-auth")
+  val strideAuthLogin: String = baseUrlFor("stride-stub")
+  val strideAuthResponse: String = baseUrlFor("stride-auth")
 
   def redirectWithoutStrideSession: HttpRequestBuilder = {
     http("Navigate to internal service and redirect to Stride Login")
-          .get("https://admin.staging.tax.service.gov.uk/customs-update-eori-admin-frontend")
+      .get("https://admin.staging.tax.service.gov.uk/customs-update-eori-admin-frontend")
       .check(status.is(303))
       .check(header(Location).saveAs("strideLoginRedirect"))
   }
@@ -53,9 +53,9 @@ object EORIRequests extends ServicesConfiguration {
 
   def postStrideLogin: HttpRequestBuilder = {
     http("post Stride login stub")
-     .post(s"${strideAuthLogin}"+"/stride-idp-stub/sign-in")
+      .post(s"${strideAuthLogin}" + "/stride-idp-stub/sign-in")
       .formParam("RelayState", "${strideRelayState}")
-      .formParam("pid", "${PID}")
+      .formParam("pid", "GB130002023001")
       .formParam("usersGivenName", "")
       .formParam("usersSurname", "")
       .formParam("emailAddress", "")
@@ -68,7 +68,7 @@ object EORIRequests extends ServicesConfiguration {
 
   def getStrideAuthResponseRedirect: HttpRequestBuilder = {
     http("get stride auth response redirect")
-      .get(s"${strideAuthLogin}"+"${authResponse}")
+      .get(s"${strideAuthLogin}" + "${authResponse}")
       .check(status.is(200))
       .check(saveSAMLResponse)
   }
@@ -79,13 +79,12 @@ object EORIRequests extends ServicesConfiguration {
       .formParam("SAMLResponse", "${samlResponse}")
       .formParam("RelayState", "${strideRelayState}")
       .check(status.is(303))
-      //.check(header(Location).is("/customs-exports-internal/choice"))
       .check((header(Location)).is("/customs-update-eori-admin-frontend"))
   }
 
 
 
-
+  //Update Journey
 
   def getSelectUpdateOption: HttpRequestBuilder = {
     http("get stride auth response redirect")
@@ -103,6 +102,7 @@ object EORIRequests extends ServicesConfiguration {
       .check(status.is(303))
       .check(header(Location).is("/customs-update-eori-admin-frontend/update"))
   }
+
   def getEnterUpdatDetails: HttpRequestBuilder = {
     http("get Update details response")
       .get(s"$baseUrl/customs-update-eori-admin-frontend/update")
@@ -114,15 +114,16 @@ object EORIRequests extends ServicesConfiguration {
   def postEnterUpdatDetails: HttpRequestBuilder = {
     http("post Enter GB Details for Update")
       .post(s"$baseUrl/customs-update-eori-admin-frontend/update")
-       .formParam("csrfToken", "${csrfToken}")
-      .formParam("existing-eori","GB130002023001")
-      .formParam("date-of-establishment.day","03")
-        .formParam("date-of-establishment.month","12")
-        .formParam("date-of-establishment.year","2000")
-        .formParam("new-eori","GB130002023002")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("existing-eori", "GB130002023001")
+      .formParam("date-of-establishment.day", "03")
+      .formParam("date-of-establishment.month", "12")
+      .formParam("date-of-establishment.year", "2000")
+      .formParam("new-eori", "GB130002023002")
       .check(status.is(303))
       .check(header(Location).is("/customs-update-eori-admin-frontend/confirm-update?oldEoriNumber=GB130002023001&establishmentDate=03%2F12%2F2000&newEoriNumber=GB130002023002"))
   }
+
   def getConfirmUpdate: HttpRequestBuilder = {
     http("get confirm for update")
       .get(s"$baseUrl/customs-update-eori-admin-frontend/confirm-update?oldEoriNumber=GB130002023001&establishmentDate=03%2F12%2F2000&newEoriNumber=GB130002023002")
@@ -135,12 +136,12 @@ object EORIRequests extends ServicesConfiguration {
     http("post confirm for update")
       .post(s"$baseUrl/customs-update-eori-admin-frontend/confirm-update?oldEoriNumber=GB130002023001&establishmentDate=03%2F12%2F2000&newEoriNumber=GB130002023002")
       .formParam("csrfToken", "${csrfToken}")
-      .formParam("confirm","true")
+      .formParam("confirm", "true")
       .check(status.is(303))
       .check(header(Location).is("/customs-update-eori-admin-frontend/update"))
   }
 
-//Cancel Journey
+  //Cancel Journey
 
   def getSelectCancelOption: HttpRequestBuilder = {
     http("get Choose Journey type as Cancel")
@@ -172,13 +173,14 @@ object EORIRequests extends ServicesConfiguration {
     http("post Enter details for Cancel")
       .post(s"$baseUrl/customs-update-eori-admin-frontend/cancel")
       .formParam("csrfToken", "${csrfToken}")
-    .formParam("existing-eori", "GB130002023001")
-      .formParam("date-of-establishment.day","03")
-    .formParam("date-of-establishment.month","12")
-    .formParam("date-of-establishment.year","2000")
+      .formParam("existing-eori", "GB130002023001")
+      .formParam("date-of-establishment.day", "03")
+      .formParam("date-of-establishment.month", "12")
+      .formParam("date-of-establishment.year", "2000")
       .check(status.is(303))
       .check(header(Location).is("/customs-update-eori-admin-frontend/confirm-cancel?existingEori=GB130002023001&establishmentDate=03%2F12%2F2000"))
   }
+
   def getConfirmCancel: HttpRequestBuilder = {
     http("get confirm for Cancel")
       .get(s"$baseUrl/customs-update-eori-admin-frontend/confirm-cancel?existingEori=GB130002023001&establishmentDate=03%2F12%2F2000")
@@ -189,13 +191,14 @@ object EORIRequests extends ServicesConfiguration {
 
   def postConfirmCancel: HttpRequestBuilder = {
     http("post confirm for Cancel")
-     // .post(s"$baseUrl/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=GB130002023001&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG")
+      // .post(s"$baseUrl/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=GB130002023001&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG")
       .post(s"$baseUrl/customs-update-eori-admin-frontend/confirm-cancel?existingEori=GB130002023001&establishmentDate=03%2F12%2F2000")
       .formParam("csrfToken", "${csrfToken}")
-      .formParam("confirm","true")
+      .formParam("confirm", "true")
       .check(status.is(303))
       .check(header(Location).is("/customs-update-eori-admin-frontend/cancel"))
   }
+
   def getCancelConfirmValidation: HttpRequestBuilder = {
     http("get confirm for Cancel")
       .get(s"$baseUrl/customs-update-eori-admin-frontend/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=GB130002023001&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG")
