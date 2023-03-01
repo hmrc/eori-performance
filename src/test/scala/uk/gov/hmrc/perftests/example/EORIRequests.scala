@@ -125,7 +125,7 @@ object EORIRequests extends ServicesConfiguration {
       .get(s"$baseUrl/customs-update-eori-admin-frontend/confirm-update?oldEoriNumber=$${EORI}&establishmentDate=$${EDAY}%2F$${EMONTH}%2F$${EYEAR}&newEoriNumber=$${NEWEORI}")
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex("Are you sure you want to replace the current EORI number with ${NEWEORI}").exists)
+      .check(regex("Replacing EORI number ${EORI}").exists)
   }
 
   def postConfirmUpdate: HttpRequestBuilder = {
@@ -161,7 +161,7 @@ object EORIRequests extends ServicesConfiguration {
       .get(s"$baseUrl/customs-update-eori-admin-frontend/cancel")
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex("Cancel a company’s subscriptions to HMRC services").exists)
+      .check(regex("Cancel a trader’s subscriptions to HMRC services").exists)
   }
 
   def postEnterCancelDetails: HttpRequestBuilder = {
@@ -180,7 +180,7 @@ object EORIRequests extends ServicesConfiguration {
       .get(s"$baseUrl/customs-update-eori-admin-frontend/confirm-cancel?existingEori=$${EORI}&establishmentDate=$${EDAY}%2F$${EMONTH}%2F$${EYEAR}")
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex("Are you sure you want to cancel ${EORI}").exists)
+      .check(regex("Cancel subscriptions for ${EORI}").exists)
   }
 
   def postConfirmCancel: HttpRequestBuilder = {
@@ -198,16 +198,16 @@ object EORIRequests extends ServicesConfiguration {
       .check(saveCsrfToken)
       .check(regex("Subscriptions cancelled for ${EORI}").exists)
   }
-  def postupdateEORILink: HttpRequestBuilder = {
-    http("Click on EORI Link")
-      .post(s"$baseUrl+/customs-update-eori-admin-frontend/update/")
-      .formParam("existing-eori","GB000020230302")
-      .formParam("txtDateOfEstablishmentDay", "10")
-      .formParam("txtDateOfEstablishmentMonth","10")
-      .formParam("txtDateOfEstablishmentYear","2000")
-      .formParam("new-eori","GB000020230303")
-      .check(status.is(303))
-      //.check(header(Location).is("/customs-exports-internal/choice"))
-      .check((header(Location)).is("/customs-update-eori-admin-frontend"))
-  }
+//  def postupdateEORILink: HttpRequestBuilder = {
+//    http("Click on EORI Link")
+//      .post(s"$baseUrl+/customs-update-eori-admin-frontend/update/")
+//      .formParam("existing-eori","GB000020230302")
+//      .formParam("txtDateOfEstablishmentDay", "10")
+//      .formParam("txtDateOfEstablishmentMonth","10")
+//      .formParam("txtDateOfEstablishmentYear","2000")
+//      .formParam("new-eori","GB000020230303")
+//      .check(status.is(303))
+//      //.check(header(Location).is("/customs-exports-internal/choice"))
+//      .check((header(Location)).is("/customs-update-eori-admin-frontend"))
+//  }
 }
