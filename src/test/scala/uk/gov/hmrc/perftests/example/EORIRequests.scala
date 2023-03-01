@@ -198,16 +198,4 @@ object EORIRequests extends ServicesConfiguration {
       .check(saveCsrfToken)
       .check(regex("Subscriptions cancelled for ${EORI}").exists)
   }
-//  def postupdateEORILink: HttpRequestBuilder = {
-//    http("Click on EORI Link")
-//      .post(s"$baseUrl+/customs-update-eori-admin-frontend/update/")
-//      .formParam("existing-eori","GB000020230302")
-//      .formParam("txtDateOfEstablishmentDay", "10")
-//      .formParam("txtDateOfEstablishmentMonth","10")
-//      .formParam("txtDateOfEstablishmentYear","2000")
-//      .formParam("new-eori","GB000020230303")
-//      .check(status.is(303))
-//      //.check(header(Location).is("/customs-exports-internal/choice"))
-//      .check((header(Location)).is("/customs-update-eori-admin-frontend"))
-//  }
 }
