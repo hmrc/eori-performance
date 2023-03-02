@@ -53,7 +53,7 @@ object EORIRequests extends ServicesConfiguration {
 
   def postStrideLogin: HttpRequestBuilder = {
     http("post Stride login stub")
-     .post(s"${strideAuthLogin}"+"/stride-idp-stub/sign-in")
+      .post(s"${strideAuthLogin}"+"/stride-idp-stub/sign-in")
       .formParam("RelayState", "${strideRelayState}")
       .formParam("pid", "${EORI}")
       .formParam("usersGivenName", "")
@@ -82,7 +82,7 @@ object EORIRequests extends ServicesConfiguration {
       .check((header(Location)).is("/customs-update-eori-admin-frontend"))
   }
 
-//Update Journey
+  //Update Journey
 
   def getSelectUpdateOption: HttpRequestBuilder = {
     http("get stride auth response redirect")
@@ -111,12 +111,12 @@ object EORIRequests extends ServicesConfiguration {
   def postEnterUpdatDetails: HttpRequestBuilder = {
     http("post Enter EORI Details for Update")
       .post(s"$baseUrl/customs-update-eori-admin-frontend/update")
-       .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "${csrfToken}")
       .formParam("existing-eori","${EORI}")
       .formParam("date-of-establishment.day","${EDAY}")
-        .formParam("date-of-establishment.month","${EMONTH}")
-        .formParam("date-of-establishment.year","${EYEAR}")
-        .formParam("new-eori","${NEWEORI}")
+      .formParam("date-of-establishment.month","${EMONTH}")
+      .formParam("date-of-establishment.year","${EYEAR}")
+      .formParam("new-eori","${NEWEORI}")
       .check(status.is(303))
       .check(header(Location).is("/customs-update-eori-admin-frontend/confirm-update?oldEoriNumber=${EORI}&establishmentDate=${EDAY}%2F${EMONTH}%2F${EYEAR}&newEoriNumber=${NEWEORI}"))
   }
@@ -125,7 +125,7 @@ object EORIRequests extends ServicesConfiguration {
       .get(s"$baseUrl/customs-update-eori-admin-frontend/confirm-update?oldEoriNumber=$${EORI}&establishmentDate=$${EDAY}%2F$${EMONTH}%2F$${EYEAR}&newEoriNumber=$${NEWEORI}")
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex("Are you sure you want to replace the current EORI number with ${NEWEORI}").exists)
+      .check(regex("Replacing EORI number ${EORI}").exists)
   }
 
   def postConfirmUpdate: HttpRequestBuilder = {
@@ -137,7 +137,7 @@ object EORIRequests extends ServicesConfiguration {
       .check(header(Location).is("/customs-update-eori-admin-frontend/update"))
   }
 
-//Cancel Journey
+  //Cancel Journey
 
   def getSelectCancelOption: HttpRequestBuilder = {
     http("get Choose Journey type as Cancel")
@@ -161,17 +161,17 @@ object EORIRequests extends ServicesConfiguration {
       .get(s"$baseUrl/customs-update-eori-admin-frontend/cancel")
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex("Cancel a company’s subscriptions to HMRC services").exists)
+      .check(regex("Cancel a trader’s subscriptions to HMRC services").exists)
   }
 
   def postEnterCancelDetails: HttpRequestBuilder = {
     http("post Enter details for Cancel")
       .post(s"$baseUrl/customs-update-eori-admin-frontend/cancel")
       .formParam("csrfToken", "${csrfToken}")
-    .formParam("existing-eori", "${EORI}")
+      .formParam("existing-eori", "${EORI}")
       .formParam("date-of-establishment.day","${EDAY}")
-    .formParam("date-of-establishment.month","${EMONTH}")
-    .formParam("date-of-establishment.year","${EYEAR}")
+      .formParam("date-of-establishment.month","${EMONTH}")
+      .formParam("date-of-establishment.year","${EYEAR}")
       .check(status.is(303))
       .check(header(Location).is("/customs-update-eori-admin-frontend/confirm-cancel?existingEori=${EORI}&establishmentDate=${EDAY}%2F${EMONTH}%2F${EYEAR}"))
   }
@@ -180,7 +180,7 @@ object EORIRequests extends ServicesConfiguration {
       .get(s"$baseUrl/customs-update-eori-admin-frontend/confirm-cancel?existingEori=$${EORI}&establishmentDate=$${EDAY}%2F$${EMONTH}%2F$${EYEAR}")
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex("Are you sure you want to cancel ${EORI}").exists)
+      .check(regex("Cancel subscriptions for ${EORI}").exists)
   }
 
   def postConfirmCancel: HttpRequestBuilder = {
@@ -197,17 +197,5 @@ object EORIRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken)
       .check(regex("Subscriptions cancelled for ${EORI}").exists)
-  }
-  def postupdateEORILink: HttpRequestBuilder = {
-    http("Click on EORI Link")
-      .post(s"$baseUrl+/customs-update-eori-admin-frontend/update/")
-      .formParam("existing-eori","GB000020230302")
-      .formParam("txtDateOfEstablishmentDay", "10")
-      .formParam("txtDateOfEstablishmentMonth","10")
-      .formParam("txtDateOfEstablishmentYear","2000")
-      .formParam("new-eori","GB000020230303")
-      .check(status.is(303))
-      //.check(header(Location).is("/customs-exports-internal/choice"))
-      .check((header(Location)).is("/customs-update-eori-admin-frontend"))
   }
 }
