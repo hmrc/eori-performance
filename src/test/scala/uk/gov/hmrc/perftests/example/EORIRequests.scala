@@ -90,7 +90,6 @@ object EORIRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken)
       .check(regex("Do you want to replace an existing EORI number or cancel subscriptions to HMRC services?").exists)
-    //  .check(regex("Replace an existing EORI number").exists)
   }
 
   def postSelectUpdateOption: HttpRequestBuilder = {
@@ -119,26 +118,30 @@ object EORIRequests extends ServicesConfiguration {
       .formParam("date-of-establishment.year","${EYEAR}")
       .formParam("new-eori","${NEWEORI}")
       .check(status.is(200))
-    //  .check(header(Location).is("/customs-update-eori-admin-frontend/confirm-update?oldEoriNumber=${EORI}&establishmentDate=${EDAY}%2F${EMONTH}%2F${EYEAR}&newEoriNumber=${NEWEORI}"))
-      .check(header(Location).is("/customs-update-eori-admin-frontend/update"))
   }
   def getConfirmUpdate: HttpRequestBuilder = {
     http("get Confirm for update")
-    //  .get(s"$baseUrl/customs-update-eori-admin-frontend/success?cancelOrUpdate=Update-Eori&oldEoriNumber=$${EORI}&newEoriNumber=$${NEWEORI}&subscribedEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG")
       .get(s"$baseUrl/customs-update-eori-admin-frontend/update")
       .check(status.is(200))
       .check(saveCsrfToken)
-    //  .check(regex("Review changes before replacing existing EORI number").exists)
   }
 
   def postConfirmUpdate: HttpRequestBuilder = {
     http("post Confirm for update")
-     // .post(s"$baseUrl/customs-update-eori-admin-frontend/success?cancelOrUpdate=Update-Eori&oldEoriNumber=$${EORI}&newEoriNumber=$${NEWEORI}&subscribedEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG")
-      .post(s"$baseUrl/customs-update-eori-admin-frontend/update")
+      .post(s"$baseUrl/customs-update-eori-admin-frontend/confirm-update")
       .formParam("csrfToken", "${csrfToken}")
-     // .formParam("confirm","true")
+      .formParam("existing-eori","${EORI}")
+        .formParam("date-of-establishment","${EDAY}/${EMONTH}/${EYEAR}")
+          .formParam("new-eori","${NEWEORI}")
+            .formParam("enrolment-list","HMRC-ATAR-ORG,HMRC-GVMS-ORG")
       .check(status.is(303))
-      .check(header(Location).is("/customs-update-eori-admin-frontend/success?cancelOrUpdate=Update-Eori&oldEoriNumber=$${EORI}&newEoriNumber=$${NEWEORI}&subscribedEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG"))
+  }
+  def getUpdateConfirmValidation: HttpRequestBuilder = {
+    http("get Confirm for Cancel")
+      .get(s"$baseUrl/customs-update-eori-admin-frontend/success?cancelOrUpdate=Update-Eori&oldEoriNumber=$${EORI}&newEoriNumber=$${NEWEORI}&subscribedEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&notUpdatableEnrolments=")
+      .check(status.is(200))
+      .check(saveCsrfToken)
+      .check(regex("EORI number ${EORI} has been replaced with ${NEWEORI}").exists)
   }
 
   //Cancel Journey
@@ -148,7 +151,7 @@ object EORIRequests extends ServicesConfiguration {
       .get(s"$baseUrl/customs-update-eori-admin-frontend")
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex("Replace an existing EORI number").exists)
+      .check(regex("Do you want to replace an existing EORI number or cancel subscriptions to HMRC services?").exists)
   }
 
   def postSelectCancelOption: HttpRequestBuilder = {
@@ -176,28 +179,32 @@ object EORIRequests extends ServicesConfiguration {
       .formParam("date-of-establishment.day","${EDAY}")
       .formParam("date-of-establishment.month","${EMONTH}")
       .formParam("date-of-establishment.year","${EYEAR}")
-      .check(status.is(303))
-      .check(header(Location).is("/customs-update-eori-admin-frontend/confirm-cancel?existingEori=${EORI}&establishmentDate=${EDAY}%2F${EMONTH}%2F${EYEAR}"))
-  }
+      .check(status.is(200))
+ }
   def getConfirmCancel: HttpRequestBuilder = {
     http("get Confirm for Cancel")
-      .get(s"$baseUrl/customs-update-eori-admin-frontend/confirm-cancel?existingEori=$${EORI}&establishmentDate=$${EDAY}%2F$${EMONTH}%2F$${EYEAR}")
+    //  .get(s"$baseUrl/customs-update-eori-admin-frontend/confirm-cancel?existingEori=$${EORI}&establishmentDate=$${EDAY}%2F$${EMONTH}%2F$${EYEAR}")
+      //.get(s"$baseUrl/customs-update-eori-admin-frontend/confirm-cancel")
+      .get(s"$baseUrl/customs-update-eori-admin-frontend/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=$${EORI}&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&nonCancelableEnrolments=")
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex(s"Review changes before cancelling subscriptions for EORI number $${EORI}").exists)
+     //.check(regex(s"Review changes before cancelling subscriptions for EORI number $${EORI}").exists)
+     // .check(regex(s"Review changes before cancelling subscriptions for EORI number $${EORI}").exists)
   }
 
   def postConfirmCancel: HttpRequestBuilder = {
     http("post Confirm for Cancel")
-      .post(s"$baseUrl/customs-update-eori-admin-frontend/confirm-cancel?existingEori=$${EORI}&establishmentDate=$${EDAY}%2F$${EMONTH}%2F$${EYEAR}")
+      .post(s"$baseUrl/customs-update-eori-admin-frontend/confirm-cancel")
       .formParam("csrfToken", "${csrfToken}")
-      .formParam("confirm","true")
+      .formParam("existing-eori", "${EORI}")
+        .formParam("date-of-establishment", "${EDAY}/${EMONTH}/${EYEAR}")
+          .formParam("enrolment-list", "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
+            .formParam("not-cancellable-enrolment-list", "")
       .check(status.is(303))
-      .check(header(Location).is("/customs-update-eori-admin-frontend/cancel"))
-  }
+   }
   def getCancelConfirmValidation: HttpRequestBuilder = {
     http("get Confirm for Cancel")
-      .get(s"$baseUrl/customs-update-eori-admin-frontend/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=$${EORI}&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG")
+      .get(s"$baseUrl/customs-update-eori-admin-frontend/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=$${EORI}&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&nonCancelableEnrolments=")
       .check(status.is(200))
       .check(saveCsrfToken)
       .check(regex("Subscriptions cancelled for ${EORI}").exists)

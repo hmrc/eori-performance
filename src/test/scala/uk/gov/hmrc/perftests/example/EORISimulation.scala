@@ -17,7 +17,7 @@
 package uk.gov.hmrc.perftests.example
 
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
-import uk.gov.hmrc.perftests.example.EORIRequests.{getConfirmCancel, _}
+import uk.gov.hmrc.perftests.example.EORIRequests._
 
 class EORISimulation extends PerformanceTestRunner {
   //Internal service
@@ -37,7 +37,8 @@ class EORISimulation extends PerformanceTestRunner {
     getEnterUpdatDetails,
     postEnterUpdatDetails,
     getConfirmUpdate,
-    postConfirmUpdate
+    postConfirmUpdate,
+      getUpdateConfirmValidation
   )
   //Cancel service
   setup("Cancel Journey", "Cancel EORI Journey steps") withActions(
