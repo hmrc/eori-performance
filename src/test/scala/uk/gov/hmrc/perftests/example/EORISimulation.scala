@@ -29,7 +29,6 @@ class EORISimulation extends PerformanceTestRunner {
     getStrideAuthResponseRedirect,
     postSAMLResponseToStrideLogin
   )
-  //Update service
   setup("Update Journey", "Update EORI Journey steps") withActions(
 
     getSelectUpdateOption,
@@ -38,9 +37,8 @@ class EORISimulation extends PerformanceTestRunner {
     postEnterUpdatDetails,
     getConfirmUpdate,
     postConfirmUpdate,
-      getUpdateConfirmValidation
+    getUpdateConfirmValidation
   )
-  //Cancel service
   setup("Cancel Journey", "Cancel EORI Journey steps") withActions(
 
     getSelectCancelOption,
