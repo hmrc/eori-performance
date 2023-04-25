@@ -31,14 +31,14 @@ object EORIRequests extends ServicesConfiguration {
 
   def redirectWithoutStrideSession: HttpRequestBuilder = {
     http("Navigate to Stride Login")
-      .get("https://admin.staging.tax.service.gov.uk/manage-eori-number")
+      .get(s"$baseUrl/manage-eori-number")
       .check(status.is(303))
       .check(header(Location).saveAs("strideLoginRedirect"))
   }
 
   def getStrideLoginRedirect: HttpRequestBuilder = {
     http("get Stride login redirect")
-      .get(s"https://admin.staging.tax.service.gov.uk$${strideLoginRedirect}")
+      .get(s"$baseUrl$${strideLoginRedirect}")
       .check(status.is(303))
       .check(header(Location).saveAs("strideStubRedirect"))
 
@@ -196,7 +196,7 @@ object EORIRequests extends ServicesConfiguration {
       .formParam("date-of-establishment", "${EDAY}/${EMONTH}/${EYEAR}")
       .formParam("enrolment-list", "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
       .formParam("not-cancellable-enrolment-list", "")
-      .check(status.is(303))
+      .check(status.is(200))
   }
 
   def getCancelConfirmValidation: HttpRequestBuilder = {
