@@ -20,7 +20,6 @@ import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.example.EORIRequests._
 
 class EORISimulation extends PerformanceTestRunner {
-  //Internal service
   setup("Stride Auth Login", "Stride auth login steps") withActions(
     redirectWithoutStrideSession,
     getStrideLoginRedirect,
