@@ -14,10 +14,10 @@ Start Mongo Docker container as follows:
 docker run --rm -d --name mongo -d -p 27017:27017 mongo:4.0
 ```
 
-Start `PLATFORM_EXAMPLE_UI_TESTS` services as follows:
+Start `CUSTOMS_UPDATE_EORI_ADMIN_FRONTEND_ALL` services as follows:
 
 ```bash
-sm --start PLATFORM_EXAMPLE_UI_TESTS -r --wait 100
+sm --start CUSTOMS_UPDATE_EORI_ADMIN_FRONTEND_ALL -r --wait 100
 ```
 
 ### Logging
