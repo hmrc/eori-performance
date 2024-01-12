@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.perftests.example.utils
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalTime}
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.joda.time.LocalTime
 
 object RequestUtils {
 
@@ -49,9 +48,9 @@ object RequestUtils {
   def validDay = validDate.getDayOfMonth.toString
 
   def validTime: LocalTime = LocalTime.now().minusHours(1)
-  def validHour = validTime.getHourOfDay.toString
-  def validMinutes = validTime.getMinuteOfHour.toString
-  def validSeconds = validTime.getSecondOfMinute.toString
+  def validHour = validTime.getHour.toString
+  def validMinutes = validTime.getMinute.toString
+  def validSeconds = validTime.getSecond.toString
 
   //Stride Auth
   val RelayStatePattern = """name="RelayState" value="([^"]+)"""
