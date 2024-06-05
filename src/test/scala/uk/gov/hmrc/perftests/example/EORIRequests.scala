@@ -38,15 +38,22 @@ object EORIRequests extends ServicesConfiguration {
 
   def getStrideLoginRedirect: HttpRequestBuilder = {
     http("get Stride login redirect")
-      .get(s"$baseUrl$${strideLoginRedirect}")
+      .get("${strideLoginRedirect}")
       .check(status.is(303))
       .check(header(Location).saveAs("strideStubRedirect"))
 
   }
 
+  def getSignInRedirect: HttpRequestBuilder = {
+    http("get Stride IDP page")
+      .get(s"$baseUrl$${strideStubRedirect}")
+      .check(status.is(303))
+      .check(header(Location).saveAs("strideSignInRedirect"))
+  }
+
   def getStrideIdpStubPage: HttpRequestBuilder = {
     http("get Stride IDP page")
-      .get("${strideStubRedirect}")
+      .get("${strideSignInRedirect}")
       .check(status.is(200))
       .check(saveRelayState)
   }
@@ -79,7 +86,7 @@ object EORIRequests extends ServicesConfiguration {
       .formParam("SAMLResponse", "${samlResponse}")
       .formParam("RelayState", "${strideRelayState}")
       .check(status.is(303))
-      .check((header(Location)).is("/manage-eori-number"))
+      .check((header(Location)).is("/stride-demo-frontend/stride/test/roles/all?successURL=%2Fmanage-eori-number&origin=customs-update-eori-admin-frontend"))
   }
 
   def getSelectUpdateOption: HttpRequestBuilder = {
