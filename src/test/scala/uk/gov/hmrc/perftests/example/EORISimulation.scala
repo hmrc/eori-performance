@@ -23,6 +23,7 @@ class EORISimulation extends PerformanceTestRunner {
   setup("Stride Auth Login", "Stride auth login steps") withActions(
     redirectWithoutStrideSession,
     getStrideLoginRedirect,
+    getSignInRedirect,
     getStrideIdpStubPage,
     postStrideLogin,
     getStrideAuthResponseRedirect,
