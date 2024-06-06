@@ -18,7 +18,10 @@ package uk.gov.hmrc.perftests.example.utils
 
 import java.time.{LocalDate, LocalTime}
 import io.gatling.core.Predef._
+import io.gatling.core.check.CheckBuilder
+import io.gatling.core.check.regex.RegexCheckType
 import io.gatling.http.Predef._
+import io.gatling.http.check.header.HttpHeaderRegexCheckType
 
 object RequestUtils {
 
@@ -26,40 +29,40 @@ object RequestUtils {
 
   val itemIdRegex = s"""customs-declare-exports/declaration/items/([^"]+)/"""
 
-  val mrnPattern = s"""id="submission-tab-other-row0-mrn"
+  val mrnPattern: String = s"""id="submission-tab-other-row0-mrn"
                       |>([^"]+)</td>""".stripMargin
 
   val declarationIdPatterm = """href="/customs-declare-exports/submissions/([^"]+)/information""""
 
-  def saveCsrfToken = regex(_ => csrfPattern).saveAs("csrfToken")
+  def saveCsrfToken: CheckBuilder[RegexCheckType, String, String] = regex(_ => csrfPattern).saveAs("csrfToken")
 
-  def saveItemId = {
+  def saveItemId: CheckBuilder[HttpHeaderRegexCheckType, Response, String] = {
     headerRegex("Location", itemIdRegex).saveAs("itemId")
   }
 
-  def saveMrn =  regex(_ => mrnPattern).saveAs("mrn")
+  def saveMrn: CheckBuilder[RegexCheckType, String, String] =  regex(_ => mrnPattern).saveAs("mrn")
 
-  def saveDecID = regex(_ => declarationIdPatterm).saveAs("decID")
+  def saveDecID: CheckBuilder[RegexCheckType, String, String] = regex(_ => declarationIdPatterm).saveAs("decID")
 
   //this will remain the same for every session, but will generate a valid time to be used for every test run
   def validDate: LocalDate = LocalDate.now.minusMonths(1)
-  def validYear = validDate.getYear.toString
-  def validMonth = validDate.getMonthValue.toString
-  def validDay = validDate.getDayOfMonth.toString
+  def validYear: String = validDate.getYear.toString
+  def validMonth: String = validDate.getMonthValue.toString
+  def validDay: String = validDate.getDayOfMonth.toString
 
   def validTime: LocalTime = LocalTime.now().minusHours(1)
-  def validHour = validTime.getHour.toString
-  def validMinutes = validTime.getMinute.toString
-  def validSeconds = validTime.getSecond.toString
+  def validHour: String = validTime.getHour.toString
+  def validMinutes: String = validTime.getMinute.toString
+  def validSeconds: String = validTime.getSecond.toString
 
   //Stride Auth
   val RelayStatePattern = """name="RelayState" value="([^"]+)"""
-  def saveRelayState = {
+  def saveRelayState: CheckBuilder[RegexCheckType, String, String] = {
     regex(_ => RelayStatePattern).saveAs("strideRelayState")
   }
 
   val SAMLResponsePattern = """name="SAMLResponse" value="([^"]+)"""
-  def saveSAMLResponse = {
+  def saveSAMLResponse: CheckBuilder[RegexCheckType, String, String] = {
     regex(_ => SAMLResponsePattern).saveAs("samlResponse")
   }
 

@@ -1,5 +1,3 @@
-**This is a template README.md.  Be sure to update this with project specific content that describes your performance test project.**
-
 # eori-performance
 
 Performance test suite for the `<digital service name>`, using [performance-test-runner](https://github.com/hmrc/performance-test-runner) under the hood.
@@ -17,7 +15,7 @@ docker run --rm -d --name mongo -d -p 27017:27017 mongo:4.0
 Start `CUSTOMS_UPDATE_EORI_ADMIN_FRONTEND_ALL` services as follows:
 
 ```bash
-sm --start CUSTOMS_UPDATE_EORI_ADMIN_FRONTEND_ALL -r --wait 100
+sm2 --start CUSTOMS_UPDATE_EORI_ADMIN_FRONTEND_ALL
 ```
 
 ### Logging

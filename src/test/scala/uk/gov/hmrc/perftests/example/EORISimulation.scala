@@ -20,7 +20,7 @@ import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.example.EORIRequests._
 
 class EORISimulation extends PerformanceTestRunner {
-  setup("Stride Auth Login", "Stride auth login steps") withActions(
+  setup("Stride Auth Login", "Stride auth login steps").withActions(
     redirectWithoutStrideSession,
     getStrideLoginRedirect,
     getSignInRedirect,
@@ -29,7 +29,7 @@ class EORISimulation extends PerformanceTestRunner {
     getStrideAuthResponseRedirect,
     postSAMLResponseToStrideLogin
   )
-  setup("Update Journey", "Update EORI Journey steps") withActions(
+  setup("Update Journey", "Update EORI Journey steps").withActions(
 
     getSelectUpdateOption,
     postSelectUpdateOption,
@@ -39,7 +39,7 @@ class EORISimulation extends PerformanceTestRunner {
     postConfirmUpdate,
     getUpdateConfirmValidation
   )
-  setup("Cancel Journey", "Cancel EORI Journey steps") withActions(
+  setup("Cancel Journey", "Cancel EORI Journey steps").withActions(
 
     getSelectCancelOption,
     postSelectCancelOption,
