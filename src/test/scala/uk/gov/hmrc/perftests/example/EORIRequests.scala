@@ -42,13 +42,13 @@ object EORIRequests extends ServicesConfiguration {
       .check(header(Location).saveAs("strideStubRedirect"))
 
   def getSignInRedirect: HttpRequestBuilder =
-    http("get Stride IDP page1")
+    http("get Stride IDP page")
       .get(s"$baseUrl#{strideStubRedirect}")
       .check(status.is(303))
       .check(header(Location).saveAs("strideSignInRedirect"))
 
   def getStrideIdpStubPage: HttpRequestBuilder =
-    http("get Stride IDP page2")
+    http("get Stride IDP page")
       .get("#{strideSignInRedirect}")
       .check(status.is(200))
       .check(saveRelayState)
