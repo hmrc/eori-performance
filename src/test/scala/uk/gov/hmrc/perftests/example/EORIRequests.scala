@@ -37,47 +37,47 @@ object EORIRequests extends ServicesConfiguration {
 
   def getStrideLoginRedirect: HttpRequestBuilder =
     http("get Stride login redirect")
-      .get("${strideLoginRedirect}")
+      .get("#{strideLoginRedirect}")
       .check(status.is(303))
       .check(header(Location).saveAs("strideStubRedirect"))
 
   def getSignInRedirect: HttpRequestBuilder =
-    http("get Stride IDP page")
-      .get(s"$baseUrl$${strideStubRedirect}")
+    http("get Stride IDP page1")
+      .get(s"$baseUrl#{strideStubRedirect}")
       .check(status.is(303))
       .check(header(Location).saveAs("strideSignInRedirect"))
 
   def getStrideIdpStubPage: HttpRequestBuilder =
-    http("get Stride IDP page")
-      .get("${strideSignInRedirect}")
+    http("get Stride IDP page2")
+      .get("#{strideSignInRedirect}")
       .check(status.is(200))
       .check(saveRelayState)
 
   def postStrideLogin: HttpRequestBuilder =
     http("post Stride login stub")
       .post(s"$strideAuthLogin/stride-idp-stub/sign-in")
-      .formParam("RelayState", "${strideRelayState}")
-      .formParam("pid", "${EORI}")
+      .formParam("RelayState", "#{strideRelayState}")
+      .formParam("pid", "#{EORI}")
       .formParam("usersGivenName", "")
       .formParam("usersSurname", "")
       .formParam("emailAddress", "")
       .formParam("status", "true")
       .formParam("signature", "valid")
-      .formParam("roles", "${ROLES}")
+      .formParam("roles", "#{ROLES}")
       .check(status.is(303))
       .check(header(Location).saveAs("authResponse"))
 
   def getStrideAuthResponseRedirect: HttpRequestBuilder =
     http("get Stride auth response")
-      .get(s"$strideAuthLogin$${authResponse}")
+      .get(s"$strideAuthLogin#{authResponse}")
       .check(status.is(200))
       .check(saveSAMLResponse)
 
   def postSAMLResponseToStrideLogin: HttpRequestBuilder =
     http("Post SAMLResponse to eori service")
       .post(s"$strideAuthResponse/stride/auth-response")
-      .formParam("SAMLResponse", "${samlResponse}")
-      .formParam("RelayState", "${strideRelayState}")
+      .formParam("SAMLResponse", "#{samlResponse}")
+      .formParam("RelayState", "#{strideRelayState}")
       .check(status.is(303))
       .check(
         header(Location).is(
@@ -95,7 +95,7 @@ object EORIRequests extends ServicesConfiguration {
   def postSelectUpdateOption: HttpRequestBuilder =
     http("post Choose journey type as Update")
       .post(s"$baseUrl/manage-eori-number")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("update-or-cancel-eori", "Update-Eori")
       .check(status.is(303))
       .check(header(Location).is("/manage-eori-number/update"))
@@ -110,12 +110,12 @@ object EORIRequests extends ServicesConfiguration {
   def postEnterUpdatDetails: HttpRequestBuilder =
     http("post Enter EORI Details for Update")
       .post(s"$baseUrl/manage-eori-number/update")
-      .formParam("csrfToken", "${csrfToken}")
-      .formParam("existing-eori", "${EORI}")
-      .formParam("date-of-establishment.day", "${EDAY}")
-      .formParam("date-of-establishment.month", "${EMONTH}")
-      .formParam("date-of-establishment.year", "${EYEAR}")
-      .formParam("new-eori", "${NEWEORI}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("existing-eori", "#{EORI}")
+      .formParam("date-of-establishment.day", "#{EDAY}")
+      .formParam("date-of-establishment.month", "#{EMONTH}")
+      .formParam("date-of-establishment.year", "#{EYEAR}")
+      .formParam("new-eori", "#{NEWEORI}")
       .check(status.is(200))
 
   def getConfirmUpdate: HttpRequestBuilder =
@@ -127,21 +127,21 @@ object EORIRequests extends ServicesConfiguration {
   def postConfirmUpdate: HttpRequestBuilder =
     http("post Confirm for update")
       .post(s"$baseUrl/manage-eori-number/confirm-update")
-      .formParam("csrfToken", "${csrfToken}")
-      .formParam("existing-eori", "${EORI}")
-      .formParam("date-of-establishment", "${EDAY}/${EMONTH}/${EYEAR}")
-      .formParam("new-eori", "${NEWEORI}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("existing-eori", "#{EORI}")
+      .formParam("date-of-establishment", "#{EDAY}/#{EMONTH}/#{EYEAR}")
+      .formParam("new-eori", "#{NEWEORI}")
       .formParam("enrolment-list", "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
       .check(status.is(303))
 
   def getUpdateConfirmValidation: HttpRequestBuilder =
     http("get Confirm for Cancel")
       .get(
-        s"$baseUrl/manage-eori-number/success?cancelOrUpdate=Update-Eori&oldEoriNumber=$${EORI}&newEoriNumber=$${NEWEORI}&subscribedEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&notUpdatableEnrolments="
+        s"#baseUrl/manage-eori-number/success?cancelOrUpdate=Update-Eori&oldEoriNumber=#{EORI}&newEoriNumber=#{NEWEORI}&subscribedEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&notUpdatableEnrolments="
       )
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex("EORI number ${EORI} has been replaced with ${NEWEORI}").exists)
+      .check(regex("EORI number #{EORI} has been replaced with #{NEWEORI}").exists)
 
   def getSelectCancelOption: HttpRequestBuilder =
     http("get Choose Journey type as Cancel")
@@ -153,7 +153,7 @@ object EORIRequests extends ServicesConfiguration {
   def postSelectCancelOption: HttpRequestBuilder =
     http("post Choose journey type as Cancel")
       .post(s"$baseUrl/manage-eori-number")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("update-or-cancel-eori", "Cancel-Eori")
       .check(status.is(303))
       .check(header(Location).is("/manage-eori-number/cancel"))
@@ -168,17 +168,17 @@ object EORIRequests extends ServicesConfiguration {
   def postEnterCancelDetails: HttpRequestBuilder =
     http("post Enter details for Cancel")
       .post(s"$baseUrl/manage-eori-number/cancel")
-      .formParam("csrfToken", "${csrfToken}")
-      .formParam("existing-eori", "${EORI}")
-      .formParam("date-of-establishment.day", "${EDAY}")
-      .formParam("date-of-establishment.month", "${EMONTH}")
-      .formParam("date-of-establishment.year", "${EYEAR}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("existing-eori", "#{EORI}")
+      .formParam("date-of-establishment.day", "#{EDAY}")
+      .formParam("date-of-establishment.month", "#{EMONTH}")
+      .formParam("date-of-establishment.year", "#{EYEAR}")
       .check(status.is(200))
 
   def getConfirmCancel: HttpRequestBuilder =
     http("get Confirm for Cancel")
       .get(
-        s"$baseUrl/manage-eori-number/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=$${EORI}&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&nonCancelableEnrolments="
+        s"$baseUrl/manage-eori-number/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=#{EORI}&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&nonCancelableEnrolments="
       )
       .check(status.is(200))
       .check(saveCsrfToken)
@@ -186,9 +186,9 @@ object EORIRequests extends ServicesConfiguration {
   def postConfirmCancel: HttpRequestBuilder =
     http("post Confirm for Cancel")
       .post(s"$baseUrl/manage-eori-number/confirm-cancel")
-      .formParam("csrfToken", "${csrfToken}")
-      .formParam("existing-eori", "${EORI}")
-      .formParam("date-of-establishment", "${EDAY}/${EMONTH}/${EYEAR}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("existing-eori", "#{EORI}")
+      .formParam("date-of-establishment", "#{EDAY}/#{EMONTH}/#{EYEAR}")
       .formParam("enrolment-list", "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
       .formParam("not-cancellable-enrolment-list", "")
       .check(status.is(200))
@@ -196,9 +196,9 @@ object EORIRequests extends ServicesConfiguration {
   def getCancelConfirmValidation: HttpRequestBuilder =
     http("get Confirm for Cancel")
       .get(
-        s"$baseUrl/manage-eori-number/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=$${EORI}&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&nonCancelableEnrolments="
+        s"$baseUrl/manage-eori-number/success?cancelOrUpdate=Cancel-Eori&oldEoriNumber=#{EORI}&cancelledEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&nonCancelableEnrolments="
       )
       .check(status.is(200))
       .check(saveCsrfToken)
-      .check(regex("Subscriptions cancelled for ${EORI}").exists)
+      .check(regex("Subscriptions cancelled for #{EORI}").exists)
 }
