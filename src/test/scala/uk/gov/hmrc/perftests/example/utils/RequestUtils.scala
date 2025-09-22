@@ -34,14 +34,14 @@ object RequestUtils {
 
   val declarationIdPatterm = """href="/customs-declare-exports/submissions/([^"]+)/information""""
 
-  def saveCsrfToken: CheckBuilder[RegexCheckType, String, String] = regex(_ => csrfPattern).saveAs("csrfToken")
+  def saveCsrfToken: CheckBuilder[RegexCheckType, String] = regex(_ => csrfPattern).saveAs("csrfToken")
 
-  def saveItemId: CheckBuilder[HttpHeaderRegexCheckType, Response, String] =
+  def saveItemId: CheckBuilder[HttpHeaderRegexCheckType, Response] =
     headerRegex("Location", itemIdRegex).saveAs("itemId")
 
-  def saveMrn: CheckBuilder[RegexCheckType, String, String] = regex(_ => mrnPattern).saveAs("mrn")
+  def saveMrn: CheckBuilder[RegexCheckType, String] = regex(_ => mrnPattern).saveAs("mrn")
 
-  def saveDecID: CheckBuilder[RegexCheckType, String, String] = regex(_ => declarationIdPatterm).saveAs("decID")
+  def saveDecID: CheckBuilder[RegexCheckType, String] = regex(_ => declarationIdPatterm).saveAs("decID")
 
   //this will remain the same for every session, but will generate a valid time to be used for every test run
   def validDate: LocalDate = LocalDate.now.minusMonths(1)
@@ -56,11 +56,11 @@ object RequestUtils {
 
   //Stride Auth
   val RelayStatePattern                                            = """name="RelayState" value="([^"]+)"""
-  def saveRelayState: CheckBuilder[RegexCheckType, String, String] =
+  def saveRelayState: CheckBuilder[RegexCheckType, String] =
     regex(_ => RelayStatePattern).saveAs("strideRelayState")
 
   val SAMLResponsePattern                                            = """name="SAMLResponse" value="([^"]+)"""
-  def saveSAMLResponse: CheckBuilder[RegexCheckType, String, String] =
+  def saveSAMLResponse: CheckBuilder[RegexCheckType, String] =
     regex(_ => SAMLResponsePattern).saveAs("samlResponse")
 
 }
