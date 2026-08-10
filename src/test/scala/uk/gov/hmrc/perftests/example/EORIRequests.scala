@@ -129,7 +129,10 @@ object EORIRequests extends ServicesConfiguration {
       .post(s"$baseUrl/manage-eori-number/confirm-update")
       .formParam("csrfToken", _("csrfToken").as[String])
       .formParam("existing-eori", _("EORI").as[String])
-      .formParam("date-of-establishment", session => s"${session("EDAY").as[String]}/${session("EMONTH").as[String]}/${session("EYEAR").as[String]}")
+      .formParam(
+        "date-of-establishment",
+        session => s"${session("EDAY").as[String]}/${session("EMONTH").as[String]}/${session("EYEAR").as[String]}"
+      )
       .formParam("new-eori", _("NEWEORI").as[String])
       .formParam("enrolment-list", _ => "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
       .check(status.is(303))
@@ -154,7 +157,7 @@ object EORIRequests extends ServicesConfiguration {
     http("post Choose journey type as Cancel")
       .post(s"$baseUrl/manage-eori-number")
       .formParam("csrfToken", _("csrfToken").as[String])
-      .formParam("update-or-cancel-eori",  _ => "Cancel-Eori")
+      .formParam("update-or-cancel-eori", _ => "Cancel-Eori")
       .check(status.is(303))
       .check(header(Location).is("/manage-eori-number/cancel"))
 
@@ -188,8 +191,11 @@ object EORIRequests extends ServicesConfiguration {
       .post(s"$baseUrl/manage-eori-number/confirm-cancel")
       .formParam("csrfToken", _("csrfToken").as[String])
       .formParam("existing-eori", _("EORI").as[String])
-      .formParam("date-of-establishment", session => s"${session("EDAY").as[String]}/${session("EMONTH").as[String]}/${session("EYEAR").as[String]}")
-      .formParam("enrolment-list",  _ => "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
+      .formParam(
+        "date-of-establishment",
+        session => s"${session("EDAY").as[String]}/${session("EMONTH").as[String]}/${session("EYEAR").as[String]}"
+      )
+      .formParam("enrolment-list", _ => "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
       .formParam("not-cancellable-enrolment-list", _ => "")
       .check(status.is(200))
 
