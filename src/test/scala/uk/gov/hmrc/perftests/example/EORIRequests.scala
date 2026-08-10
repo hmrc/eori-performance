@@ -77,7 +77,7 @@ object EORIRequests extends ServicesConfiguration {
     http("Post SAMLResponse to eori service")
       .post(s"$strideAuthResponse/stride/auth-response")
       .formParam("SAMLResponse", _("samlResponse").as[String])
-      .formParam("RelayState", _("strideRelaySate").as[String])
+      .formParam("RelayState", _("strideRelayState").as[String])
       .check(status.is(303))
       .check(
         header(Location).is(
