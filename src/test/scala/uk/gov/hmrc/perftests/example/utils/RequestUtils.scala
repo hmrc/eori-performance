@@ -30,20 +30,22 @@ object RequestUtils {
   val itemIdRegex = s"""customs-declare-exports/declaration/items/([^"]+)/"""
 
   val mrnPattern: String = s"""id="submission-tab-other-row0-mrn"
-                      |>([^"]+)</td>""".stripMargin
+                              |>([^"]+)</td>""".stripMargin
 
   val declarationIdPatterm = """href="/customs-declare-exports/submissions/([^"]+)/information""""
+
+  val locationcs: CharSequence = "Location"
 
   def saveCsrfToken: CheckBuilder[RegexCheckType, String] = regex(_ => csrfPattern).saveAs("csrfToken")
 
   def saveItemId: CheckBuilder[HttpHeaderRegexCheckType, Response] =
-    headerRegex("Location", itemIdRegex).saveAs("itemId")
+    headerRegex(locationcs, _ => itemIdRegex).saveAs("itemId")
 
   def saveMrn: CheckBuilder[RegexCheckType, String] = regex(_ => mrnPattern).saveAs("mrn")
 
   def saveDecID: CheckBuilder[RegexCheckType, String] = regex(_ => declarationIdPatterm).saveAs("decID")
 
-  //this will remain the same for every session, but will generate a valid time to be used for every test run
+  // this will remain the same for every session, but will generate a valid time to be used for every test run
   def validDate: LocalDate = LocalDate.now.minusMonths(1)
   def validYear: String    = validDate.getYear.toString
   def validMonth: String   = validDate.getMonthValue.toString
@@ -54,12 +56,12 @@ object RequestUtils {
   def validMinutes: String = validTime.getMinute.toString
   def validSeconds: String = validTime.getSecond.toString
 
-  //Stride Auth
-  val RelayStatePattern                                            = """name="RelayState" value="([^"]+)"""
+  // Stride Auth
+  val RelayStatePattern                                    = """name="RelayState" value="([^"]+)"""
   def saveRelayState: CheckBuilder[RegexCheckType, String] =
     regex(_ => RelayStatePattern).saveAs("strideRelayState")
 
-  val SAMLResponsePattern                                            = """name="SAMLResponse" value="([^"]+)"""
+  val SAMLResponsePattern                                    = """name="SAMLResponse" value="([^"]+)"""
   def saveSAMLResponse: CheckBuilder[RegexCheckType, String] =
     regex(_ => SAMLResponsePattern).saveAs("samlResponse")
 

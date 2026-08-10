@@ -17,7 +17,7 @@
 package uk.gov.hmrc.perftests.example
 
 import io.gatling.core.Predef._
-import io.gatling.http.HeaderNames.Location
+import io.gatling.http.HeaderNames._
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
@@ -48,7 +48,7 @@ object EORIRequests extends ServicesConfiguration {
       .check(header(Location).saveAs("strideSignInRedirect"))
 
   def getStrideIdpStubPage: HttpRequestBuilder =
-    http("get Stride IDP page")
+    http("get Stride IDP page 2")
       .get("#{strideSignInRedirect}")
       .check(status.is(200))
       .check(saveRelayState)
@@ -56,14 +56,14 @@ object EORIRequests extends ServicesConfiguration {
   def postStrideLogin: HttpRequestBuilder =
     http("post Stride login stub")
       .post(s"$strideAuthLogin/stride-idp-stub/sign-in")
-      .formParam("RelayState", "#{strideRelayState}")
-      .formParam("pid", "#{EORI}")
-      .formParam("usersGivenName", "")
-      .formParam("usersSurname", "")
-      .formParam("emailAddress", "")
-      .formParam("status", "true")
-      .formParam("signature", "valid")
-      .formParam("roles", "#{ROLES}")
+      .formParam("RelayState", _("strideRelaySate").as[String])
+      .formParam("pid", _("EORI").as[String])
+      .formParam("usersGivenName", _ => "")
+      .formParam("usersSurname", _ => "")
+      .formParam("emailAddress", _ => "")
+      .formParam("status", _ => "true")
+      .formParam("signature", _ => "valid")
+      .formParam("roles", _("ROLES").as[String])
       .check(status.is(303))
       .check(header(Location).saveAs("authResponse"))
 
@@ -76,8 +76,8 @@ object EORIRequests extends ServicesConfiguration {
   def postSAMLResponseToStrideLogin: HttpRequestBuilder =
     http("Post SAMLResponse to eori service")
       .post(s"$strideAuthResponse/stride/auth-response")
-      .formParam("SAMLResponse", "#{samlResponse}")
-      .formParam("RelayState", "#{strideRelayState}")
+      .formParam("SAMLResponse", _("samlResponse").as[String])
+      .formParam("RelayState", _("strideRelaySate").as[String])
       .check(status.is(303))
       .check(
         header(Location).is(
@@ -95,8 +95,8 @@ object EORIRequests extends ServicesConfiguration {
   def postSelectUpdateOption: HttpRequestBuilder =
     http("post Choose journey type as Update")
       .post(s"$baseUrl/manage-eori-number")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("update-or-cancel-eori", "Update-Eori")
+      .formParam("csrfToken", _("csrfToken").as[String])
+      .formParam("update-or-cancel-eori", _ => "Update-Eori")
       .check(status.is(303))
       .check(header(Location).is("/manage-eori-number/update"))
 
@@ -110,12 +110,12 @@ object EORIRequests extends ServicesConfiguration {
   def postEnterUpdatDetails: HttpRequestBuilder =
     http("post Enter EORI Details for Update")
       .post(s"$baseUrl/manage-eori-number/update")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("existing-eori", "#{EORI}")
-      .formParam("date-of-establishment.day", "#{EDAY}")
-      .formParam("date-of-establishment.month", "#{EMONTH}")
-      .formParam("date-of-establishment.year", "#{EYEAR}")
-      .formParam("new-eori", "#{NEWEORI}")
+      .formParam("csrfToken", _("csrfToken").as[String])
+      .formParam("existing-eori", _("EORI").as[String])
+      .formParam("date-of-establishment.day", _("EDAY").as[String])
+      .formParam("date-of-establishment.month", _("EMONTH").as[String])
+      .formParam("date-of-establishment.year", _("EYEAR").as[String])
+      .formParam("new-eori", _("NEWEORI").as[String])
       .check(status.is(200))
 
   def getConfirmUpdate: HttpRequestBuilder =
@@ -127,11 +127,14 @@ object EORIRequests extends ServicesConfiguration {
   def postConfirmUpdate: HttpRequestBuilder =
     http("post Confirm for update")
       .post(s"$baseUrl/manage-eori-number/confirm-update")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("existing-eori", "#{EORI}")
-      .formParam("date-of-establishment", "#{EDAY}/#{EMONTH}/#{EYEAR}")
-      .formParam("new-eori", "#{NEWEORI}")
-      .formParam("enrolment-list", "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
+      .formParam("csrfToken", _("csrfToken").as[String])
+      .formParam("existing-eori", _("EORI").as[String])
+      .formParam(
+        "date-of-establishment",
+        session => s"${session("EDAY").as[String]}/${session("EMONTH").as[String]}/${session("EYEAR").as[String]}"
+      )
+      .formParam("new-eori", _("NEWEORI").as[String])
+      .formParam("enrolment-list", _ => "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
       .check(status.is(303))
 
   def getUpdateConfirmValidation: HttpRequestBuilder =
@@ -153,8 +156,8 @@ object EORIRequests extends ServicesConfiguration {
   def postSelectCancelOption: HttpRequestBuilder =
     http("post Choose journey type as Cancel")
       .post(s"$baseUrl/manage-eori-number")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("update-or-cancel-eori", "Cancel-Eori")
+      .formParam("csrfToken", _("csrfToken").as[String])
+      .formParam("update-or-cancel-eori", _ => "Cancel-Eori")
       .check(status.is(303))
       .check(header(Location).is("/manage-eori-number/cancel"))
 
@@ -168,11 +171,11 @@ object EORIRequests extends ServicesConfiguration {
   def postEnterCancelDetails: HttpRequestBuilder =
     http("post Enter details for Cancel")
       .post(s"$baseUrl/manage-eori-number/cancel")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("existing-eori", "#{EORI}")
-      .formParam("date-of-establishment.day", "#{EDAY}")
-      .formParam("date-of-establishment.month", "#{EMONTH}")
-      .formParam("date-of-establishment.year", "#{EYEAR}")
+      .formParam("csrfToken", _("csrfToken").as[String])
+      .formParam("existing-eori", _("EORI").as[String])
+      .formParam("date-of-establishment.day", _("EDAY").as[String])
+      .formParam("date-of-establishment.month", _("EMONTH").as[String])
+      .formParam("date-of-establishment.year", _("EYEAR").as[String])
       .check(status.is(200))
 
   def getConfirmCancel: HttpRequestBuilder =
@@ -186,11 +189,14 @@ object EORIRequests extends ServicesConfiguration {
   def postConfirmCancel: HttpRequestBuilder =
     http("post Confirm for Cancel")
       .post(s"$baseUrl/manage-eori-number/confirm-cancel")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("existing-eori", "#{EORI}")
-      .formParam("date-of-establishment", "#{EDAY}/#{EMONTH}/#{EYEAR}")
-      .formParam("enrolment-list", "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
-      .formParam("not-cancellable-enrolment-list", "")
+      .formParam("csrfToken", _("csrfToken").as[String])
+      .formParam("existing-eori", _("EORI").as[String])
+      .formParam(
+        "date-of-establishment",
+        session => s"${session("EDAY").as[String]}/${session("EMONTH").as[String]}/${session("EYEAR").as[String]}"
+      )
+      .formParam("enrolment-list", _ => "HMRC-ATAR-ORG,HMRC-GVMS-ORG")
+      .formParam("not-cancellable-enrolment-list", _ => "")
       .check(status.is(200))
 
   def getCancelConfirmValidation: HttpRequestBuilder =
