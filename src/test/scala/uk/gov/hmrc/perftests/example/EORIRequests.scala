@@ -56,7 +56,7 @@ object EORIRequests extends ServicesConfiguration {
   def postStrideLogin: HttpRequestBuilder =
     http("post Stride login stub")
       .post(s"$strideAuthLogin/stride-idp-stub/sign-in")
-      .formParam("RelayState", _("strideRelaySate").as[String])
+      .formParam("RelayState", _("strideRelayState").as[String])
       .formParam("pid", _("EORI").as[String])
       .formParam("usersGivenName", _ => "")
       .formParam("usersSurname", _ => "")
