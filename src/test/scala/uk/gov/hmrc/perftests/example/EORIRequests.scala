@@ -140,7 +140,7 @@ object EORIRequests extends ServicesConfiguration {
   def getUpdateConfirmValidation: HttpRequestBuilder =
     http("get Confirm for Cancel")
       .get(
-        s"#baseUrl/manage-eori-number/success?cancelOrUpdate=Update-Eori&oldEoriNumber=#{EORI}&newEoriNumber=#{NEWEORI}&subscribedEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&notUpdatableEnrolments="
+        s"$baseUrl/manage-eori-number/success?cancelOrUpdate=Update-Eori&oldEoriNumber=#{EORI}&newEoriNumber=#{NEWEORI}&subscribedEnrolments=HMRC-ATAR-ORG%2CHMRC-GVMS-ORG&notUpdatableEnrolments="
       )
       .check(status.is(200))
       .check(saveCsrfToken)
